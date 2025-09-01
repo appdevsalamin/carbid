@@ -39,13 +39,27 @@
                             </ul>
 
                           <div class="header-action">
+                            @if(auth('driver_gurd')->check())
+                                @if(auth('driver_gurd')->user()->two_factor_status == 0)
+                                  <a class="header-account-bar btn--base" href="{{ setRoute('driver.dashboard') }}">
+                                        <i class="las la-tachometer-alt"></i> {{ __("Dashboard") }}
+                                    </a> &nbsp;&nbsp;&nbsp;&nbsp;
+                                @else
+                                     <a class="header-account-bar btn--base" href="{{ setRoute('driver.authorize.google.2fa') }}">
+                                        <i class="las la-user-shield"></i> {{ __("Dashboard") }}
+                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                @endif
+                            @else
                             <a class="header-account-bar btn--base {{ request()->routeIs('driver.login') ? 'active' : '' }}" 
                             href="{{ setRoute('driver.login') }}">
                                 <i class="las la-clone"></i> {{ __("Driver Login") }}
                             </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                            @endauth
+                            
                              
-                            @auth
-                                @if(auth()->user()->two_factor_status == 0)
+                             @if(auth('web')->check())
+                                @if(auth('web')->user()->two_factor_status == 0)
                                      <a class="header-account-bar btn--base" href="{{ setRoute('user.dashboard') }}">
                                         <i class="las la-tachometer-alt"></i> {{ __("Dashboard") }}
                                     </a>
