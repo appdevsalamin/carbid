@@ -169,7 +169,7 @@ Route::name('admin.')->group(function () {
             Route::post('kyc/reject/{username}','kycReject')->name('kyc.reject');
             Route::post('search','search')->name('search');
 
-            // new user
+            // new driver
             Route::get('create','create')->name('create');
             Route::post('store','store')->name('store');
         });

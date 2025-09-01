@@ -115,7 +115,7 @@ class DriverCareController extends Controller
     public function emailAllDrivers()
     {
         $page_title = "Email To Drivers";
-        return view('admin.sections.driver-care.email-to-users', compact(
+        return view('admin.sections.driver-care.email-to-drivers', compact(
             'page_title',
         ));
     }

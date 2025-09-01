@@ -127,10 +127,10 @@
                                         'title'     => "Email Unverified",
                                         'route'     => "admin.users.email.unverified",
                                     ],
-                                    [
-                                        'title'     => "KYC Unverified",
-                                        'route'     => "admin.users.kyc.unverified",
-                                    ],
+                                    // [
+                                    //     'title'     => "KYC Unverified",
+                                    //     'route'     => "admin.users.kyc.unverified",
+                                    // ],
                                     [
                                         'title'     => "All Users",
                                         'route'     => "admin.users.index",
