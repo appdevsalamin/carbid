@@ -11,11 +11,11 @@ class DriverWallet extends Model
 {
      use HasFactory;
     public $timestamps = true;
-    protected $fillable = ['balance', 'status','user_id','currency_id','created_at','updated_at'];
+    protected $fillable = ['balance', 'status','driver_id','currency_id','created_at','updated_at'];
 
     protected $casts = [
         'id'                    => 'integer',
-        'driver_id'               => 'integer',
+        'driver_id'             => 'integer',
         'currency_id'           => 'integer',
         'balance'               => 'decimal:8',
         'profit_balance'        => 'decimal:8',

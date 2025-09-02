@@ -68,7 +68,6 @@ class ProfileController extends Controller
         ];
 
         if($request->hasFile("image")) {
-          
             $image = upload_file($validated['image'],'driver-profile',auth('driver_gurd')->user()->image);
             
             $upload_image = upload_files_from_path_dynamic([$image['dev_path']],'driver-profile');

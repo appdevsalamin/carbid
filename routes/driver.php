@@ -14,14 +14,13 @@ use App\Http\Controllers\Driver\SupportTicketController;
 use App\Http\Controllers\Driver\KycController as DriverKycController;
 
 Route::prefix("driver")->name("driver.")->group(function(){
-    
-    Route::middleware(['kyc.verification.guard'])->group(function () {
-        
-     Route::controller(DashboardController::class)->group(function () {
+
+    Route::controller(DashboardController::class)->group(function () {
         Route::get('dashboard', 'index')->name('dashboard');
         Route::post('logout','logout')->name('logout');
     });
-
+    
+    Route::middleware(['kyc.verification.guard'])->group(function () {
      Route::controller(ProfileController::class)->prefix("profile")->name("profile.")->group(function(){
         Route::get('/','index')->name('index');
         Route::put('password/update','passwordUpdate')->name('password.update');

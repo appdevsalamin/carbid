@@ -44,10 +44,10 @@ class UserSupportTicket extends Model
     }
 
     public function getTypeAttribute() {
-       if ($this->user_id) {
+    if ($this->user_id) {
         return "USER";
     } elseif ($this->driver_id) {
-            return "DRIVER";
+        return "DRIVER";
     }
         return "UNKNOWN";
     }
