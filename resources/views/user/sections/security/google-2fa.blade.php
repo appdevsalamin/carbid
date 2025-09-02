@@ -105,10 +105,22 @@
                     <input type="hidden" name="target" value="1">
                     <div class="modal-body">
                         <div class="row mb-10-none">
-                            <div class="col-xl-12 col-lg-12 form-group">
                                 <label>{{__("Verify Code*")}}</label>
-                                <input type="text" name="code" class="form--control"
-                                    placeholder="Enter Google Authenticator Code..." required>
+                                <div class="row ml-b-20">
+                                <div class="col-lg-12 form-group text-center">
+                                    <input class="otp" type="text" name="code[]" oninput='digitValidate(this)' onkeyup='tabChange(1)'
+                                        maxlength=1 required>
+                                    <input class="otp" type="text" name="code[]" oninput='digitValidate(this)' onkeyup='tabChange(2)'
+                                        maxlength=1 required>
+                                    <input class="otp" type="text" name="code[]" oninput='digitValidate(this)' onkeyup='tabChange(3)'
+                                        maxlength=1 required>
+                                    <input class="otp" type="text" name="code[]" oninput='digitValidate(this)' onkeyup='tabChange(4)'
+                                        maxlength=1 required>
+                                    <input class="otp" type="text" name="code[]" oninput='digitValidate(this)' onkeyup='tabChange(5)'
+                                        maxlength=1 required>
+                                        <input class="otp" type="text" name="code[]" oninput='digitValidate(this)' onkeyup='tabChange(6)'
+                                        maxlength=1 required>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -140,4 +152,35 @@
             throwMessage('success', ["Copied: " + copyText.value]);
         });
     </script>
+
+
+<script>
+    let digitValidate = function (ele) {
+        ele.value = ele.value.replace(/[^0-9]/g, '');
+    }
+    let tabChange = function (val) {
+        let ele = document.querySelectorAll('.otp');
+        if (ele[val - 1].value != '') {
+            ele[val].focus()
+        } else if (ele[val - 1].value == '') {
+            ele[val - 2].focus()
+        }
+    }
+    $(".otp").parents("form").find("input[type=submit],button[type=submit]").click(function(e){
+        // e.preventDefault();
+        var otps = $(this).parents("form").find(".otp");
+        var result = true;
+        $.each(otps,function(index,item){
+            if($(item).val() == "" || $(item).val() == null) {
+                result = false;
+            }
+        });
+        if(result == false) {
+            $(this).parents("form").find(".otp").addClass("required");
+        }else {
+            $(this).parents("form").find(".otp").removeClass("required");
+            $(this).parents("form").submit();
+        }
+    });
+</script>
 @endpush

@@ -41,6 +41,9 @@ class SecurityController extends Controller
      */
     public function google2FAVerify(Request $request)
     {
+        $implodeCode = implode('', $request->code);
+        $request->merge(['code' => $implodeCode]);
+        
       $request->validate([
             'code' => 'required|numeric',
         ]);
