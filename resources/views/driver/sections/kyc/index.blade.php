@@ -3,6 +3,14 @@
 @push('css')
     
 @endpush
+@section('breadcrumb')
+    @include('driver.components.breadcrumb',['breadcrumbs' => [
+        [
+            'name'  => __("Dashboard"),
+            'url'   => setRoute("driver.dashboard"),
+        ]
+    ], 'active' => __("KYC Information")])
+@endsection
 
 @section('content')
     <div class="table-content">
