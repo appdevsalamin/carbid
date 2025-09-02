@@ -11,8 +11,12 @@ use App\Http\Controllers\Driver\MyBookingController;
 use App\Http\Controllers\Driver\AddMoneyController;
 use App\Http\Controllers\Driver\MoneyOutController;
 use App\Http\Controllers\Driver\SupportTicketController;
+use App\Http\Controllers\Driver\KycController as DriverKycController;
 
 Route::prefix("driver")->name("driver.")->group(function(){
+    
+    Route::middleware(['kyc.verification.guard'])->group(function () {
+        
      Route::controller(DashboardController::class)->group(function () {
         Route::get('dashboard', 'index')->name('dashboard');
         Route::post('logout','logout')->name('logout');
@@ -49,10 +53,17 @@ Route::prefix("driver")->name("driver.")->group(function(){
         Route::get('/','index')->name('index');
     });
 
-      Route::controller(MoneyOutController::class)->prefix('money-out')->name('money.out.')->group(function() {
+    Route::controller(MoneyOutController::class)->prefix('money-out')->name('money.out.')->group(function() {
         Route::get('/','index')->name('index');
+     });
+     
     });
-
+    
+    //DRIVER KYC ROUTE
+    Route::controller(DriverKycController::class)->prefix('kyc')->name('kyc.')->group(function() {
+        Route::get('/','index')->name('index');
+        Route::post('submit','store')->name('submit');
+    });
 
 
  });

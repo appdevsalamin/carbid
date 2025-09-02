@@ -1,4 +1,4 @@
-@if (admin_permission_by_name("admin.users.kyc.reject"))
+@if (admin_permission_by_name("admin.drivers.kyc.reject"))
     @isset($user)
         @if ($user->kyc_verified != global_const()::REJECTED)
             {{-- KYC Reject Modal --}}
@@ -8,7 +8,7 @@
                         <h5 class="modal-title">{{ __("Rejejct KYC ") }} {{ "@" . $user->username }}</h5>
                     </div>
                     <div class="modal-form-data">
-                        <form class="modal-form" method="POST" action="{{ setRoute('admin.users.kyc.reject',$user->username) }}" enctype="multipart/form-data">
+                        <form class="modal-form" method="POST" action="{{ setRoute('admin.drivers.kyc.reject',$user->username) }}" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="target" value="{{ $user->username }}">
                             <div class="row mb-10-none">
@@ -36,6 +36,11 @@
                 $(".reject-btn").click(function(){
                     openModalBySelector($("#reject-modal"))
                 });
+                 @if ($errors->has('reason'))
+                    $(document).ready(function() {
+                        openModalBySelector($("#reject-modal"));
+                    });
+                @endif
             </script>
         @endpush
     @endisset

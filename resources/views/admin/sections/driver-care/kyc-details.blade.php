@@ -136,7 +136,7 @@
 @push('script')
     <script>
         $(".approve-btn").click(function(){
-            var actionRoute = "{{ setRoute('admin.users.kyc.approve',$user->username) }}";
+            var actionRoute = "{{ setRoute('admin.drivers.kyc.approve',$user->username) }}";
             var target      = "{{ $user->username }}";
             var message     = `Are you sure to approve {{ "@" . $user->username }} KYC information.`;
             openDeleteModal(actionRoute,target,message,"Approve","POST");

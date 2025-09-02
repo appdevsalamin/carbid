@@ -1765,7 +1765,21 @@ option {
 .form-control::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
-
+.kyc-title-text{
+  margin-top: 12px;
+}
+.kyc-form--control{
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  line-height: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #222222;
+  padding: 10px 25px;
+  width: 100%;
+}
 .form--control {
   background-color: #ffffff;
   border: 1px solid #dddddd;
@@ -6653,5 +6667,5 @@ div[class*=col]:last-child .how-it-works-item::after {
   background-color: white !important;
   color: #ea5455 !important;
   border: 1px solid #ea5455; 
-
 }
+

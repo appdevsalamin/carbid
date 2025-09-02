@@ -4,6 +4,7 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Constants\GlobalConst;
 
 class SetupKyc extends Model
 {
@@ -16,7 +17,7 @@ class SetupKyc extends Model
     ];
 
     public function scopeUserKyc($query) {
-        return $query->where("user_type","USER")->active();
+        return $query->where("user_type",GlobalConst::DRIVER)->active();
     }
 
     public function scopeActive($query) {

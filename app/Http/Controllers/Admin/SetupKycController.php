@@ -28,37 +28,6 @@ class SetupKycController extends Controller
         ));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -117,7 +86,7 @@ class SetupKycController extends Controller
         $validated['fields'] = decorate_input_fields($validated);
 
         $validated = Arr::except($validated,['label','input_type','min_char','max_char','field_necessity','file_extensions','file_max_size','select_options']);
-        $validated['last_edit_by']  = Auth::user()->id;
+        $validated['last_edit_by']  = Auth::guard('driver_gurd')->id();
 
         try{
             SetupKyc::where('slug',$slug)->update($validated);
@@ -129,16 +98,6 @@ class SetupKycController extends Controller
         return back()->with(['success' => ['Information updated successfully!']]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        
-    }
 
     /**
      * Function for update KYC status

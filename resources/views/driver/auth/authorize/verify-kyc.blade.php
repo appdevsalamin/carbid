@@ -18,11 +18,11 @@
                         @csrf
                         <div class="row ml-b-20">
 
-                            @include('user.components.generate-kyc-fields',['fields' => $kyc_fields])
+                            @include('driver.components.generate-kyc-fields',['fields' => $kyc_fields])
 
                             <div class="col-lg-12 form-group">
                                 <div class="forgot-item">
-                                    <label>{{ __("Back to ") }}<a href="{{ setRoute('user.dashboard') }}" class="text--base">{{ __("Dashboard") }}</a></label>
+                                    <label>{{ __("Back to ") }}<a href="{{ setRoute('driver.dashboard') }}" class="text--base">{{ __("Dashboard") }}</a></label>
                                 </div>
                             </div>
                             <div class="col-lg-12 form-group text-center">

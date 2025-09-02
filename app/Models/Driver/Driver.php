@@ -69,10 +69,10 @@ class Driver extends Authenticatable
         return $query->where('status', false);
     }
 
-    // public function kyc()
-    // {
-    //     return $this->hasOne(UserKycData::class);
-    // }
+    public function kyc()
+    {
+        return $this->hasOne(DriverKycData::class);
+    }
 
     public function getFullnameAttribute()
     {

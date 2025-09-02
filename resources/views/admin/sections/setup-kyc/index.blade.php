@@ -27,8 +27,8 @@
                 <table class="custom-table two">
                     <thead>
                         <tr>
-                            <th>Type</th>
-                            <th>Status</th>
+                            <th>{{__("Type")}}</th>
+                            <th>{{__("Status")}}</th>
                             <th></th>
                         </tr>
                     </thead>

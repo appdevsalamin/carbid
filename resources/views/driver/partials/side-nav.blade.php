@@ -1,4 +1,5 @@
- <div class="sidebar">
+
+<div class="sidebar">
         <div class="sidebar-inner">
             <div class="sidebar-area">
                 <div class="sidebar-logo">
@@ -21,37 +22,46 @@
                         <li class="sidebar-menu-item">
                            <a href="{{ setRoute('driver.add.money.index') }}">
                                 <i class="menu-icon las la-sign"></i>
-                                <span class="menu-title">Add Money</span>
+                                <span class="menu-title">{{__("Add Money")}}</span>
                             </a>
                         </li>
                          <li class="sidebar-menu-item">
                              <a href="{{ setRoute('driver.money.out.index') }}">
                                 <i class="menu-icon las la-fill-drip"></i>
-                                <span class="menu-title">Money Out</span>
+                                <span class="menu-title">{{__("Money Out")}}</span>
                             </a>
                         </li>
                           <li class="sidebar-menu-item">
                             <a href="#">
                                 <i class="menu-icon las la-id-card"></i>
-                                <span class="menu-title">Service Profile</span>
+                                <span class="menu-title">{{__("Service Profile")}}</span>
                             </a>
                         </li>
                         <li class="sidebar-menu-item">
                              <a href="{{ setRoute('driver.booking.index') }}">
                                 <i class="menu-icon las la-car"></i>
-                                <span class="menu-title">My Booking</span>
+                                <span class="menu-title">{{__("My Booking")}}</span>
                             </a>
                         </li>
+                        @if($basic_settings->driver_kyc_verification)
+                        <li class="sidebar-menu-item">
+                            <a href="{{ setRoute( 'driver.kyc.index') }}">
+                                <i class="menu-icon las  la-user-shield"></i>
+                                <span class="menu-title">{{__("KYC Verification")}}</span>
+                            </a>
+                        </li>
+                        @endif
+                       
                         <li class="sidebar-menu-item">
                             <a href="{{ setRoute( 'driver.security.google.2fa') }}">
                                 <i class="menu-icon las la-qrcode"></i>
-                                <span class="menu-title">2FA Security</span>
+                                <span class="menu-title">{{__("2FA Security")}}</span>
                             </a>
                         </li>
                         <li class="sidebar-menu-item">
                             <a href="#" class="logout-btn">
                                 <i class="menu-icon las la-sign-out-alt"></i>
-                                <span class="menu-title">Logout</span>
+                                <span class="menu-title">{{__("Logout")}}</span>
                             </a>
                         </li>
                     </ul>

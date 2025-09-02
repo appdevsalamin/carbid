@@ -118,48 +118,56 @@ class AuthorizationController extends Controller
         $request->session()->regenerateToken();
     }
 
-
+    /**
+     * Summary of showKycFrom
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function showKycFrom() {
-        $user = auth()->user();
-        if($user->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => ['You are already KYC Verified User']]);
+        $driver = auth('driver_gurd')->user();
+        if($driver->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => ['You are already KYC Verified driver']]);
         $page_title = setPageTitle("KYC Verification");
-        $user_kyc = SetupKyc::userKyc()->first();
-        if(!$user_kyc) return back();
-        $kyc_data = $user_kyc->fields;
+        $driver_kyc = SetupKyc::userKyc()->first();
+        if(!$driver_kyc) return back();
+        $kyc_data = $driver_kyc->fields;
         $kyc_fields = [];
         if($kyc_data) {
-            $kyc_fields = array_reverse($kyc_data);
+            $kyc_fields = $kyc_data;
         }
         return view('driver.auth.authorize.verify-kyc',compact("page_title","kyc_fields"));
     }
 
+    /**
+     * Summary of kycSubmit
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function kycSubmit(Request $request) {
 
-        $user = auth()->user();
-        if($user->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => ['You are already KYC Verified User']]);
+        $driver = auth('driver_gurd')->user();
+        if($driver->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => ['You are already KYC Verified Driver']]);
 
-        $user_kyc_fields = SetupKyc::userKyc()->first()->fields ?? [];
-        $validation_rules = $this->generateValidationRules($user_kyc_fields);
+        $driver_kyc_fields = SetupKyc::userKyc()->first()->fields ?? [];
+        $validation_rules = $this->generateValidationRules($driver_kyc_fields);
 
         $validated = Validator::make($request->all(),$validation_rules)->validate();
-        $get_values = $this->placeValueWithFields($user_kyc_fields,$validated);
+        $get_values = $this->placeValueWithFields($driver_kyc_fields,$validated);
         
         $create = [
-            'user_id'       => auth()->user()->id,
+            'driver_id'     => auth('driver_gurd')->user()->id,
             'data'          => json_encode($get_values),
             'created_at'    => now(),
         ];
 
         DB::beginTransaction();
         try{
-            DB::table('user_kyc_data')->updateOrInsert(["user_id" => $user->id],$create);
-            $user->update([
+            DB::table('driver_kyc_data')->updateOrInsert(["driver_id" => $driver->id],$create);
+            $driver->update([
                 'kyc_verified'  => GlobalConst::PENDING,
             ]);
             DB::commit();
         }catch(Exception $e) {
             DB::rollBack();
-            $user->update([
+            $driver->update([
                 'kyc_verified'  => GlobalConst::DEFAULT,
             ]);
             $this->generatedFieldsFilesDelete($get_values);
