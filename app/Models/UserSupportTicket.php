@@ -57,7 +57,10 @@ class UserSupportTicket extends Model
     }
 
     public function scopePending($query) {
-        return $query->where("status",SupportTicketConst::PENDING)->orWhere("status",SupportTicketConst::DEFAULT);
+        return $query->where(function($q) {
+                $q->where('status', SupportTicketConst::PENDING)
+                ->orWhere('status', SupportTicketConst::DEFAULT);
+            });
     }
 
     public function scopeActive($query) {

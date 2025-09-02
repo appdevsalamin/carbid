@@ -1,3 +1,10 @@
+@php
+    $pending_ticket = $support_tickets->whereIn('status', [
+        support_ticket_const()::PENDING,
+        support_ticket_const()::DEFAULT
+    ])->count();
+@endphp
+
 @if (isset($support_tickets))
     <div class="dashboard-area">
         <div class="dashboard-item-area">
@@ -8,7 +15,7 @@
                             <div class="left">
                                 <h6 class="title">{{ __("Pending Tickets") }}</h6>
                                 <div class="user-info">
-                                    <h2 class="user-count">{{ $pending_ticket = $support_tickets->where("status",support_ticket_const()::PENDING)->count() }}</h2>
+                                    <h2 class="user-count">{{ $pending_ticket }}</h2>
                                 </div>
                                 <div class="user-badge">
                                     <a href="{{ setRoute('admin.support.ticket.pending') }}" class="view-btn bg--warning">{{ __("View All") }}</a>
