@@ -9,5 +9,5 @@ class SupportTicketConst{
     const DEFAULT = 0;
 
     const USER      = "user";
-    const NEWUSER   = "new-user";
+    const NEWUSER   = "driver";
 }

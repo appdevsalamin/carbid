@@ -13,6 +13,8 @@ use App\Models\UserSupportTicket;
 use App\Models\Driver\DriverSupportTicket;
 use App\Models\Admin\BasicSettings;
 use App\Http\Controllers\Controller;
+use App\Traits\User\RegisteredUsers;
+use App\Traits\Driver\RegisteredDriver;
 use Illuminate\Support\Facades\Hash;
 use App\Constants\SupportTicketConst;
 use Illuminate\Support\Facades\Validator;
@@ -21,9 +23,13 @@ use Illuminate\Support\Facades\Notification;
 use App\Events\Admin\SupportConversationEvent;
 use App\Notifications\Admin\NewUserNotification;
 use App\Notifications\Admin\SupportTicketNotification;
+use App\Notifications\Admin\DriverSupportTicketNotification;
+use App\Models\Driver\Driver;
+use App\Constants\GlobalConst;
 
 class SupportTicketController extends Controller
 {
+     use RegisteredUsers,RegisteredDriver;
     /**
      * Display a listing of the resource.
      *
@@ -31,7 +37,7 @@ class SupportTicketController extends Controller
      */
     public function index()
     {
-        $page_title = "All Ticket";
+        $page_title = __("All Ticket");
         $support_tickets = UserSupportTicket::orderByDesc("id")->get();
         return view('admin.sections.support-ticket.index', compact(
             'page_title',
@@ -46,7 +52,7 @@ class SupportTicketController extends Controller
      * @return view
      */
     public function pending() {
-        $page_title = "Pending Ticket";
+        $page_title = __("Pending Ticket");
         $support_tickets = UserSupportTicket::pending()->orderByDesc("id")->get();
         return view('admin.sections.support-ticket.index', compact(
             'page_title',
@@ -61,7 +67,7 @@ class SupportTicketController extends Controller
      * @return view
      */
     public function active() {
-        $page_title = "Active Ticket";
+        $page_title = __("Active Ticket");
         $support_tickets = UserSupportTicket::active()->orderByDesc("id")->get();
         return view('admin.sections.support-ticket.index', compact(
             'page_title',
@@ -76,7 +82,7 @@ class SupportTicketController extends Controller
      * @return view
      */
     public function solved() {
-        $page_title = "Solved Ticket";
+        $page_title = __("Solved Ticket");
         $support_tickets = UserSupportTicket::solved()->orderByDesc("id")->get();
         return view('admin.sections.support-ticket.index', compact(
             'page_title',
@@ -89,7 +95,7 @@ class SupportTicketController extends Controller
     public function conversation($encrypt_id) {
         $support_ticket_id = decrypt($encrypt_id);
         $support_ticket = UserSupportTicket::findOrFail($support_ticket_id);
-        $page_title = "Support Chat";
+        $page_title = __("Support Chat");
         return view('admin.sections.support-ticket.conversation',compact(
             'page_title',
             'support_ticket',
@@ -177,7 +183,7 @@ class SupportTicketController extends Controller
      * @return view
      */
     public function create(){
-        $page_title         = "Create Support Ticket";
+        $page_title         = __("Create Support Ticket");
 
         return view('admin.sections.support-ticket.create',compact(
             'page_title'
@@ -189,11 +195,19 @@ class SupportTicketController extends Controller
      */
     public function checkUser(Request $request){
         $validator      = Validator::make($request->all(),[
-            'email'     => 'required|email'
+            'email'     => 'required|email',
+            'user_type_check'     => 'required|string',
         ]);
         $validated      = $validator->validate();
-        $user['data']   = User::where('email',$validated['email'])->first();
-        if(!$user['data']) return response()->json(['not_exists' =>['Unregistered user.']]);
+
+        if ($validated['user_type_check'] == 'user') {
+            $user['data']   = User::where('email',$validated['email'])->first();
+            if(!$user['data']) return response()->json(['not_exists' =>['Unregistered User.']]);
+        } else {
+            $user['data']   = Driver::where('email',$validated['email'])->first();
+            if(!$user['data']) return response()->json(['not_exists' =>['Unregistered Driver.']]);
+        }
+
         return response($user);
 
     }
@@ -202,7 +216,9 @@ class SupportTicketController extends Controller
      * @param Illuminate\Http\Request $request
      */
     public function store(Request $request){
+        
         $validator          = Validator::make($request->all(),[
+            'user_type_check' => 'required|string',
             'email'         => 'required|email',
             'user_type'     => 'required|string',
             'firstname'     => 'required_if:user_type,==' . SupportTicketConst::NEWUSER,
@@ -210,7 +226,7 @@ class SupportTicketController extends Controller
             'password'      => 'required_if:user_type,==' . SupportTicketConst::NEWUSER,
             'subject'       => 'required|string',
             'desc'          => 'required',
-            'attachment.*'  => "nullable|max:204800",
+            'attachment.*'  => "nullable|file|mimes:jpg,jpeg,png,svg,webp|max:204800",
         ]);
         if($validator->fails()){
             return back()->withErrors($validator)->withInput($request->all());
@@ -218,14 +234,26 @@ class SupportTicketController extends Controller
 
         $validated          = $validator->validate();
         $basic_settings     = BasicSettings::first();
+
         if($validated['user_type'] == SupportTicketConst::USER){
-            $user                       = User::where('email',$validated['email'])->first();
+
+            if($validated['user_type_check'] == 'user'){
+                $user                       = User::where('email',$validated['email'])->first();
+                $validated['user_id']       = $user->id;
+                $validated['type']          = GlobalConst::USER;
+                $validated['name']          = $user->firstname;
+            }else {
+                $user                       = Driver::where('email',$validated['email'])->first();
+                $validated['driver_id']     = $user->id;
+                $validated['type']          = GlobalConst::DRIVER;
+                $validated['name']          = $user->firstname;
+            }
+
             $validated['token']         = generate_unique_string('user_support_tickets','token');
-            $validated['user_id']       = $user->id;
             $validated['admin_id']      = auth()->user()->id;
             $validated['status']        = 0;
             $validated['created_at']    = now();
-            $validated = Arr::except($validated,['user_type','firstname','lastname','password','attachment']);
+            $validated = Arr::except($validated,['user_type','firstname','lastname','password','attachment','user_type_check']);
 
             try{
                 $support_ticket_id = UserSupportTicket::insertGetId($validated);
@@ -270,82 +298,147 @@ class SupportTicketController extends Controller
             return redirect()->route('admin.support.ticket.index')->with(['success' => ['Support ticket created successfully!']]);
         }else{
 
-            $user_name              = make_username(Str::slug($validated['firstname']),Str::slug($validated['lastname']));
-            $check_user_name        = User::where('username',$user_name)->first();
+            if($validated['user_type_check'] == 'user'){
 
-            if($check_user_name){
-                $user_name = $user_name .'-'.rand(123,456);
-            }
+                $user_name              = make_username(Str::slug($validated['firstname']),Str::slug($validated['lastname']),'users');
+                $check_user_name        = User::where('username',$user_name)->first();
 
-            $user_data['firstname']     = $validated['firstname'];
-            $user_data['lastname']      = $validated['lastname'];
-            $user_data['email']         = $validated['email'];
-            $user_data['username']      = $user_name;
-            $user_data['password']      = Hash::make($validated['password']);
-
-
-            $user_data['status']        = true;
-            $user_data['email_verified']      = true;
-            $user_data['kyc_verified']        = true;
-            try{
-                $user = User::create($user_data);
-                if($basic_settings->email_notification){
-                    try{
-                        Notification::route('mail',$validated['email'])->notify(new NewUserNotification($data = $user_data,$request->password));
-                    }catch(Exception $e){
-                    }
+                if($check_user_name){
+                    $user_name = $user_name .'-'.rand(123,456);
                 }
-            }catch(Exception $e){
-                return back()->with(['error' => [__("Something went wrong! Please try again.")]]);
-            }
 
-            $validated['token']         = generate_unique_string('user_support_tickets','token');
-            $validated['user_id']       = $user->id;
-            $validated['admin_id']      = auth()->user()->id;
-            $validated['status']        = 0;
-            $validated['created_at']    = now();
-            $validated = Arr::except($validated,['user_type','firstname','lastname','password','attachment']);
+                $user_data['firstname']     = $validated['firstname'];
+                $user_data['lastname']      = $validated['lastname'];
+                $user_data['email']         = $validated['email'];
+                $user_data['username']      = $user_name;
+                $user_data['password']      = Hash::make($validated['password']);
 
-            try{
-                $support_ticket_id = UserSupportTicket::insertGetId($validated);
-
-                if($basic_settings->email_notification == true){
-                    try{
-                        Notification::route('mail',$user->email)->notify(new SupportTicketNotification($user,$support_ticket_id));
-                    }catch(Exception $e){}
-                }
-            }catch(Exception $e) {
-                return back()->with(['error' => ['Something went worng! Please try again.']]);
-            }
-
-            if($request->hasFile('attachment')) {
-                $validated_files = $request->file("attachment");
-                $attachment = [];
-                $files_link = [];
-                foreach($validated_files as $item) {
-                    $upload_file = upload_file($item,'support-attachment');
-                    if($upload_file != false) {
-                        $attachment[] = [
-                            'user_support_ticket_id'    => $support_ticket_id,
-                            'attachment'                => $upload_file['name'],
-                            'attachment_info'           => json_encode($upload_file),
-                            'created_at'                => now(),
-                        ];
-                    }
-
-                    $files_link[] = get_files_path('support-attachment') . "/". $upload_file['name'];
-                }
+                $user_data['status']              = true;
+                $user_data['email_verified']      = true;
+                $user_data['kyc_verified']        = true;
 
                 try{
-                    UserSupportTicketAttachment::insert($attachment);
-                }catch(Exception $e) {
-                    $support_ticket_id->delete();
-                    delete_files($files_link);
+                    $user = User::create($user_data);
+                    $this->createUserWallets($user);
+                    if($basic_settings->email_notification){
+                        try{
+                            Notification::route('mail',$validated['email'])->notify(new NewUserNotification($data = $user_data,$request->password));
+                        }catch(Exception $e){
+                        }
+                    }
+                }catch(Exception $e){
+                   
+                    return back()->with(['error' => [__("Something went wrong! Please try again.")]]);
+                }
 
-                    return back()->with(['error' => ['Opps! Faild to upload attachment. Please try again.']]);
+                $validated['token']         = generate_unique_string('user_support_tickets','token');
+                $validated['user_id']       = $user->id;
+                $validated['admin_id']      = auth()->user()->id;
+                $validated['status']        = 0;
+                $validated['type']          = GlobalConst::USER;
+                $validated['name']          = $user->firstname;
+                $validated['created_at']    = now();
+                $validated = Arr::except($validated,['user_type','firstname','lastname','password','country','attachment','user_type_check']);
+
+                try{
+                    $support_ticket_id = UserSupportTicket::insertGetId($validated);
+
+                    if($basic_settings->email_notification == true){
+                        try{
+                            Notification::route('mail',$user->email)->notify(new SupportTicketNotification($user,$support_ticket_id));
+                        }catch(Exception $e){}
+                    }
+                }catch(Exception $e) {
+                    return back()->with(['error' => ['Something went worng! Please try again.']]);
+                }
+            }else {
+
+                // for driver cerete
+                $user_name              = make_username(Str::slug($validated['firstname']),Str::slug($validated['lastname']),'drivers');
+                $check_user_name        = Driver::where('username',$user_name)->first();
+
+                if($check_user_name){
+                    $user_name = $user_name .'-'.rand(123,456);
+                }
+
+                $user_data['firstname']     = $validated['firstname'];
+                $user_data['lastname']      = $validated['lastname'];
+                $user_data['email']         = $validated['email'];
+                $user_data['username']      = $user_name;
+                $user_data['password']      = Hash::make($validated['password']);
+
+                $user_data['status']        = true;
+                $user_data['email_verified']      = true;
+                $user_data['kyc_verified']        = true;
+
+                try{
+                    $user = Driver::create($user_data);
+                    $this->createDriverWallets($user);
+                    if($basic_settings->email_notification){
+                        try{
+                            Notification::route('mail',$validated['email'])->notify(new NewUserNotification($data = $user_data,$request->password));
+                        }catch(Exception $e){
+                        }
+                    }
+                }catch(Exception $e){
+                   
+                    return back()->with(['error' => [__("Something went wrong! Please try again.")]]);
+                }
+
+                $validated['token']         = generate_unique_string('user_support_tickets','token');
+                $validated['driver_id']     = $user->id;
+                $validated['admin_id']      = auth()->user()->id;
+                $validated['status']        = 0;
+                $validated['type']          = GlobalConst::DRIVER;
+                $validated['name']          = $user->firstname;
+                $validated['created_at']    = now();
+                $validated = Arr::except($validated,['user_type','firstname','lastname','password','country','attachment','user_type_check']);
+
+                try{
+                    $support_ticket_id = UserSupportTicket::insertGetId($validated);
+
+                    if($basic_settings->email_notification == true){
+                        try{
+                            Notification::route('mail',$user->email)->notify(new DriverSupportTicketNotification($user,$support_ticket_id));
+                        }catch(Exception $e){}
+                    }
+                }catch(Exception $e) {
+                   
+                    return back()->with(['error' => ['Something went worng! Please try again.']]);
                 }
             }
-            return redirect()->route('admin.support.ticket.index')->with(['success' => ['Support ticket created successfully!']]);
+
+
+                if($request->hasFile('attachment')) {
+                    $validated_files = $request->file("attachment");
+                    $attachment = [];
+                    $files_link = [];
+                    foreach($validated_files as $item) {
+                        $upload_file = upload_file($item,'support-attachment');
+                        if($upload_file != false) {
+                            $attachment[] = [
+                                'user_support_ticket_id'    => $support_ticket_id,
+                                'attachment'                => $upload_file['name'],
+                                'attachment_info'           => json_encode($upload_file),
+                                'created_at'                => now(),
+                            ];
+                        }
+
+                        $files_link[] = get_files_path('support-attachment') . "/". $upload_file['name'];
+                    }
+
+                    try{
+                        UserSupportTicketAttachment::insert($attachment);
+                    }catch(Exception $e) {
+                        $support_ticket_id->delete();
+                        delete_files($files_link);
+
+                        return back()->with(['error' => ['Opps! Faild to upload attachment. Please try again.']]);
+                    }
+                }
+                return redirect()->route('admin.support.ticket.index')->with(['success' => ['Support ticket created successfully!']]);
+
+
         }
     }
 

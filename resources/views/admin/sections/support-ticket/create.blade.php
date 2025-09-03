@@ -28,7 +28,15 @@
                 <div class="row mb-10-none">
                     <div class="input-fields">
                         <div class="row">
-                            <input type="hidden" name="user_type">
+                            <input type="hidden" name="user_type" id="user_type">
+                              <div class="col-xl-12 col-lg-12 form-group mt-2">
+                                <option value=""> {{ __("User Type") }}* </option>
+                                <select name="user_type_check" id="user_type_check" class="form--control select2-basic">
+                                    <option value="user"> {{ __('User') }} </option>
+                                    <option value="driver"> {{ __('Driver') }} </option>
+                                </select>
+                            </div>
+
                             <div class="col-xl-6 col-lg-6 form-group">
                                 @include('admin.components.form.input',[
                                     'label'     => __("Email"),
@@ -106,43 +114,108 @@
 
 @push('script')
 <script>
-    $("input[name=email]").keyup(function(){
-        var checkUserURL    = "{{ setRoute('admin.support.ticket.check.user') }}";
-        var email           = $(this).val();
-        var user            = "{{ support_ticket_const()::USER }}";
-        var new_user        = "{{ support_ticket_const()::NEWUSER }}";
+    // $("input[name=email]").keyup(function(){
+    //     var checkUserURL    = "{{ setRoute('admin.support.ticket.check.user') }}";
+    //     var email           = $(this).val();
+    //     var user            = "{{ support_ticket_const()::USER }}";
+    //     var new_user        = "{{ support_ticket_const()::NEWUSER }}";
 
-        if(email == '' || email == null){
-            $('.exist').text('');
-        }
-        $.post(checkUserURL,{email:email,_token:"{{ csrf_token() }}"},function(response){
-            if(response.not_exists){
-                if($('.exist').hasClass('text--success')){
-                    $('.exist').removeClass('text--success');
-                }
-                $('.exist').addClass('text--danger').text(response.not_exists);
-                $('.new-user').removeClass('d-none');
-                $('input[name=user_type]').val(new_user);
-                return false
-            }
-            if(response['data'] != null){
-                if($('.exist').hasClass('text--danger')){
-                    $('.exist').removeClass('text--danger');
-                }
-                $('.new-user').addClass('d-none');  
-                $('.exist').text(`Registered user.`).addClass('text--success');
-                $('input[name=user_type]').val(user);
-            } else {
-                if($('.exist').hasClass('text--success')){
-                    $('.exist').removeClass('text--success');
-                }
-                $('.new-user').removeClass('d-none');
-                $('.exist').text('Unregistered user.').addClass('text--danger');
-                $('input[name=user_type]').val(new_user);
-                return false
-            }
+    //     if(email == '' || email == null){
+    //         $('.exist').text('');
+    //     }
+    //     $.post(checkUserURL,{email:email,_token:"{{ csrf_token() }}"},function(response){
+    //         if(response.not_exists){
+    //             if($('.exist').hasClass('text--success')){
+    //                 $('.exist').removeClass('text--success');
+    //             }
+    //             $('.exist').addClass('text--danger').text(response.not_exists);
+    //             $('.new-user').removeClass('d-none');
+    //             $('input[name=user_type]').val(new_user);
+    //             return false
+    //         }
+    //         if(response['data'] != null){
+    //             if($('.exist').hasClass('text--danger')){
+    //                 $('.exist').removeClass('text--danger');
+    //             }
+    //             $('.new-user').addClass('d-none');  
+    //             $('.exist').text(`Registered user.`).addClass('text--success');
+    //             $('input[name=user_type]').val(user);
+    //         } else {
+    //             if($('.exist').hasClass('text--success')){
+    //                 $('.exist').removeClass('text--success');
+    //             }
+    //             $('.new-user').removeClass('d-none');
+    //             $('.exist').text('Unregistered user.').addClass('text--danger');
+    //             $('input[name=user_type]').val(new_user);
+    //             return false
+    //         }
+    //     });
+    // });
+     $(document).ready(function() {
+
+        $("input[name=email], #user_type_check").on("keyup change", function() {
+            checkUser();
         });
+
+        function checkUser() {
+            var checkUserURL = "{{ setRoute('admin.support.ticket.check.user') }}";
+            var email = $("input[name=email]").val();
+            var user         = "{{ support_ticket_const()::USER }}";
+            var new_user     = "{{ support_ticket_const()::NEWUSER }}";
+            var user_type_check    = $('#user_type_check').val();
+
+            if(email === '' || email === null){
+                $('.exist').text('');
+                return;
+            }
+
+            $.post(checkUserURL, {
+                email: email,
+                user_type_check: user_type_check,
+                _token: "{{ csrf_token() }}"
+            }, function(response){
+
+                if(response.not_exists){
+                    $('.exist')
+                        .removeClass('text--success')
+                        .addClass('text--danger')
+                        .text(response.not_exists);
+
+                    $('.new-user').removeClass('d-none');
+                    $('#user_type').val(new_user); // <-- fixed
+                    return false;
+                }
+
+                if(response['data'] != null){
+                        $('.exist')
+                            .removeClass('text--danger')
+                            .addClass('text--success');
+
+                        if (user_type_check === "driver") {
+                            $('.exist').text('Registered driver.');
+                            $('#user_type').val('driver'); 
+                        } else {
+                            $('.exist').text('Registered user.');
+                            $('#user_type').val('user'); 
+                        }
+
+                        $('.new-user').addClass('d-none');
+                } else {
+                    $('.exist')
+                        .removeClass('text--success')
+                        .addClass('text--danger')
+                        .text('Unregistered user.');
+
+                    $('.new-user').removeClass('d-none');
+                    $('#user_type').val(new_user); // <-- fixed
+                    return false;
+                }
+            });
+        }
+
     });
+
+
 </script>
 <script>
     function placeRandomPassword(clickedButton,placeInput) {
