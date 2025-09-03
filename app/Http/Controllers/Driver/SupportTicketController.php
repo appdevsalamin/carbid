@@ -27,7 +27,7 @@ class SupportTicketController extends Controller
      */
     public function index()
     {
-        $page_title = "Support Tickets";
+        $page_title = __("Support Tickets");
         $support_tickets = UserSupportTicket::where('driver_id',auth('driver_gurd')->id())
                                             ->orderByDesc("id")
                                             ->paginate(10);
@@ -42,7 +42,7 @@ class SupportTicketController extends Controller
      */
     public function create()
     {
-        $page_title = "Add New Ticket";
+        $page_title = __("Add New Ticket");
         return view('driver.sections.support-ticket.create', compact('page_title'));
     }
 
@@ -72,7 +72,7 @@ class SupportTicketController extends Controller
         try{
             $support_ticket_id = UserSupportTicket::insertGetId($validated);
         }catch(Exception $e) {
-            return back()->with(['error' => ['Something went worng! Please try again.']]);
+            return back()->with(['error' => [__('Something went worng! Please try again.')]]);
         }
 
         if($request->hasFile('attachment')) {
@@ -99,11 +99,11 @@ class SupportTicketController extends Controller
                 $support_ticket_id->delete();
                 delete_files($files_link);
 
-                return back()->with(['error' => ['Opps! Faild to upload attachment. Please try again.']]);
+                return back()->with(['error' => [__('Opps! Faild to upload attachment. Please try again.')]]);
             }
         }
 
-        return back()->with(['success' => ['Support ticket created successfully!']]);
+        return back()->with(['success' => [__('Support ticket created successfully!')]]);
         
     }
 
@@ -118,7 +118,7 @@ class SupportTicketController extends Controller
         $support_ticket_id = decrypt($encrypt_id);
         $support_ticket = UserSupportTicket::findOrFail($support_ticket_id);
 
-        $page_title = "Support Chating";
+        $page_title = __("Support Chating");
         return view('driver.sections.support-ticket.conversation', compact('page_title','support_ticket'));
     }
 
@@ -149,7 +149,7 @@ class SupportTicketController extends Controller
             $chat_data = UserSupportChat::create($data);
         }catch(Exception $e) {
             return $e;
-            $error = ['error' => ['SMS Sending faild! Please try again.']];
+            $error = ['error' => [__('SMS Sending faild! Please try again.')]];
             return Response::error($error,null,500);
         }
 
@@ -157,7 +157,7 @@ class SupportTicketController extends Controller
             event(new SupportConversationEvent($support_ticket,$chat_data));
         }catch(Exception $e) {
             return $e;
-            $error = ['error' => ['SMS Sending faild! Please try again.']];
+            $error = ['error' => [__('SMS Sending faild! Please try again.')]];
             return Response::error($error,null,500);
         }
     }

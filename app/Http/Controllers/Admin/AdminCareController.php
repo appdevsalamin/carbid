@@ -653,7 +653,9 @@ class AdminCareController extends Controller
         }
 
         $validated = $validator->validate();
-        $admins = Admin::notAuth()->search($validated['text'])->select("firstname","lastname","username","email","image","status","phone","admin_role_id")->limit(10)->get();
+        $admins = Admin::search($validated['text'])
+                        ->limit(10)->get();
+        
         return view('admin.components.search.admin-search',compact(
             'admins',
         ));

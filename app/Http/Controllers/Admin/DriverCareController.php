@@ -403,7 +403,6 @@ class DriverCareController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse
      */
     public function search(Request $request) {
-
         $validator = Validator::make($request->all(),[
             'text'  => 'required|string',
         ]);

@@ -13,7 +13,7 @@ class DashboardController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index() {
-        $page_title = "Dashboard";
+        $page_title = __("Dashboard");
         return view('driver.dashboard',compact("page_title"));
     }
 

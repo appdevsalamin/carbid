@@ -28,7 +28,7 @@ class AuthorizationController extends Controller
      */
     public function showMailFrom($token)
     {
-        $page_title = setPageTitle("Mail Authorization");
+        $page_title = setPageTitle(__("Mail Authorization"));
         $driverToken = DriverAuthorization::where("token",$token)->first();
         $driver = Driver::where('id', $driverToken->driver_id)->first();
 
@@ -64,7 +64,7 @@ class AuthorizationController extends Controller
         $auth_column = DriverAuthorization::where("token",$request->token)->where("code",$request->code)->first();
         if($auth_column->created_at->addSeconds($otp_exp_sec) < now()) {
             $this->authLogout($request);
-            return redirect()->route('driver.login')->with(['error' => ['Session expired. Please try again']]);
+            return redirect()->route('driver.login')->with(['error' => [__('Session expired. Please try again')]]);
         }
 
         try{
@@ -74,10 +74,10 @@ class AuthorizationController extends Controller
             $auth_column->delete();
         }catch(Exception $e) {
             $this->authLogout($request);
-            return redirect()->route('driver.login')->with(['error' => ['Something went wrong! Please try again']]);
+            return redirect()->route('driver.login')->with(['error' => [__('Something went wrong! Please try again')]]);
         }
 
-        return redirect()->intended(route("driver.dashboard"))->with(['success' => ['Account successfully verified']]);
+        return redirect()->intended(route("driver.dashboard"))->with(['success' => [__('Account successfully verified')]]);
     }
 
      /**
@@ -86,7 +86,7 @@ class AuthorizationController extends Controller
     public function resendMail(Request $request, $token)
     {
        $driver_authorize = DriverAuthorization::where("token",$token)->first();
-        if(!$driver_authorize) return back()->with(['error' => ['Request token is invalid']]);
+        if(!$driver_authorize) return back()->with(['error' => [__('Request token is invalid')]]);
         if(Carbon::now() <= $driver_authorize->created_at->addMinutes(GlobalConst::USER_PASS_RESEND_TIME_MINUTE)) {
             throw ValidationException::withMessages([
                 'code'      => 'You can resend verification code after '.Carbon::now()->diffInSeconds($driver_authorize->created_at->addMinutes(GlobalConst::USER_PASS_RESEND_TIME_MINUTE)). ' seconds',
@@ -104,11 +104,11 @@ class AuthorizationController extends Controller
             }catch(Exception $e) {}
         }catch(Exception $e) {
             throw ValidationException::withMessages([
-                'code'      => "Something went wrong! Please try again.",
+                'code'      => __("Something went wrong! Please try again."),
             ]);
         }
 
-        return redirect()->route('driver.authorize.mail',$token)->with(['success' => ['Mail Resend Success!']]);
+        return redirect()->route('driver.authorize.mail',$token)->with(['success' => [__('Mail Resend Success!')]]);
     }
 
 
@@ -124,7 +124,7 @@ class AuthorizationController extends Controller
      */
     public function showKycFrom() {
         $driver = auth('driver_gurd')->user();
-        if($driver->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => ['You are already KYC Verified driver']]);
+        if($driver->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => [__('You are already KYC Verified driver')]]);
         $page_title = setPageTitle("KYC Verification");
         $driver_kyc = SetupKyc::userKyc()->first();
         if(!$driver_kyc) return back();
@@ -144,7 +144,7 @@ class AuthorizationController extends Controller
     public function kycSubmit(Request $request) {
 
         $driver = auth('driver_gurd')->user();
-        if($driver->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => ['You are already KYC Verified Driver']]);
+        if($driver->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => [__('You are already KYC Verified driver')]]);
 
         $driver_kyc_fields = SetupKyc::userKyc()->first()->fields ?? [];
         $validation_rules = $this->generateValidationRules($driver_kyc_fields);
@@ -171,10 +171,10 @@ class AuthorizationController extends Controller
                 'kyc_verified'  => GlobalConst::DEFAULT,
             ]);
             $this->generatedFieldsFilesDelete($get_values);
-            return back()->with(['error' => ['Something went wrong! Please try again']]);
+            return back()->with(['error' => [__('Something went wrong! Please try again')]]);
         }
 
-        return redirect()->route("driver.profile.index")->with(['success' => ['KYC information successfully submitted']]);
+        return redirect()->route("driver.profile.index")->with(['success' => [__('KYC information successfully submitted')]]);
     }
 
     /**

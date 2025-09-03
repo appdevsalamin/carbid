@@ -17,7 +17,7 @@ class KycController extends Controller
     
     public function index()
     {
-        $page_title = "KYC Verification";
+        $page_title = __("KYC Verification");
         $user = auth('driver_gurd')->user();
         $driver_kyc = SetupKyc::userKyc()->first();
         if(!$driver_kyc) return redirect()->route('driver.dashboard');
@@ -35,7 +35,7 @@ class KycController extends Controller
     public function store(Request $request) {
 
         $user = auth('driver_gurd')->user();
-        if($user->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => ['You are already KYC Verified Driver']]);
+        if($user->kyc_verified == GlobalConst::VERIFIED) return back()->with(['success' => [__('You are already KYC Verified Driver')]]);
 
         $user_kyc_fields = SetupKyc::userKyc()->first()->fields ?? [];
         $validation_rules = $this->generateValidationRules($user_kyc_fields);
@@ -62,9 +62,9 @@ class KycController extends Controller
                 'kyc_verified'  => GlobalConst::DEFAULT,
             ]);
             $this->generatedFieldsFilesDelete($get_values);
-            return back()->with(['error' => ['Something went wrong! Please try again']]);
+            return back()->with(['error' => [__('Something went wrong! Please try again')]]);
         }
 
-        return redirect()->route('driver.kyc.index')->with(['success' => ['KYC information successfully submitted']]);
+        return redirect()->route('driver.kyc.index')->with(['success' => [__('KYC information successfully submitted')]]);
     }
 }

@@ -433,10 +433,10 @@ class SupportTicketController extends Controller
                         $support_ticket_id->delete();
                         delete_files($files_link);
 
-                        return back()->with(['error' => ['Opps! Faild to upload attachment. Please try again.']]);
+                        return back()->with(['error' => [__('Opps! Faild to upload attachment. Please try again.')]]);
                     }
                 }
-                return redirect()->route('admin.support.ticket.index')->with(['success' => ['Support ticket created successfully!']]);
+                return redirect()->route('admin.support.ticket.index')->with(['success' => [__('Support ticket created successfully!')]]);
 
 
         }
