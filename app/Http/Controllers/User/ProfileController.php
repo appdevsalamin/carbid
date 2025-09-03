@@ -46,7 +46,7 @@ class ProfileController extends Controller
             'city'          => "nullable|string|max:50",
             'zip_code'      => "nullable|numeric",
             'address'       => "nullable|string|max:250",
-            'image'         => "nullable|image|mimes:jpg,png,jpeg|max:10240",
+            'image'         => "nullable|image|mimes:jpg,png,jpeg,webp,svg|max:10240",
         ])->validate();
 
         $validated['mobile']        = remove_speacial_char($validated['phone']);
@@ -68,7 +68,7 @@ class ProfileController extends Controller
         if($request->hasFile("image")) {
             $image = upload_file($validated['image'],'user-profile',auth()->user()->image);
             $upload_image = upload_files_from_path_dynamic([$image['dev_path']],'user-profile');
-            delete_file($image['dev_path']);
+            // delete_file($image['dev_path']);
             $validated['image']     = $upload_image;
         }
 

@@ -3015,6 +3015,7 @@ textarea.form--control {
   color: #ffffff;
   line-height: 1;
   margin-bottom: 40px;
+  max-width: 450px;
 }
 .banner-content .banner-btn {
   text-align: right;

@@ -1265,16 +1265,20 @@ function upload_file($file,$destination_path,$old_file = null) {
         ];
 
         try{
-
             if($old_file) {
                 $old_file_link = $save_path . "/" . $old_file;
                 delete_file($old_file_link);
             }
-
             File::move($file,$file_public_link);
         }catch(Exception $e) {
             return false;
         }
+        try{
+            chmod($file_public_link, 0644);
+        }catch(Exception $e) {
+            // handle error
+        }
+
 
         return $file_info;
     }
