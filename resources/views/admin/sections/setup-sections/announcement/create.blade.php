@@ -87,10 +87,10 @@
                                                 'value'         => old($item->code . "_description")
                                             ])
                                         </div>
-                                        <!-- <div class="form-group">
+                                       <div class="form-group">
                                             <label>{{ __("Tags") }}<span>*</span></label>
                                             <select name="{{ $item->code }}_tags[]" class="form-control select2-auto-tokenize"  multiple="multiple" data-placeholder="Add Tags"></select>
-                                        </div> -->
+                                        </div> 
                                     </div>
                                 @endforeach
                                 

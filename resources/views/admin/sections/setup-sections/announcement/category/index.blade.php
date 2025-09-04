@@ -47,8 +47,9 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Status</th>
-                            <th>Created At</th>
+                            <th>{{__("Name")}}</th>
+                            <th>{{__("Status")}}</th>
+                            <th>{{__("Created At")}}</th>
                             <th></th>
                         </tr>
                     </thead>

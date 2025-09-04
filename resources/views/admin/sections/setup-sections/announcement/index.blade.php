@@ -47,10 +47,10 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Created At</th>
+                            <th>{{__("Title")}}</th>
+                            <th>{{__("Description")}}</th>
+                            <th>{{__("Status")}}</th>
+                            <th>{{__("Created At")}}</th>
                             <th></th>
                         </tr>
                     </thead>

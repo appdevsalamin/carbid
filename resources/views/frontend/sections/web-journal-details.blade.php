@@ -35,7 +35,19 @@
                         <p>
                              {!! $announcement->data->language->$app_local->description ?? $announce->data->language->$default->description !!}
                         </p>
-                    
+                        <div class="widget-box">
+                            <h4 class="widget-title">{{ __("Tags") }}</h4>
+                            <div class="tag-widget-box">
+                                <ul class="tag-list">
+                                    @php
+                                        $tags    = $announcement->data->language->$app_local->tags ?? $announcement->data->language->$default->tags ?? '';
+                                    @endphp
+                                    @foreach ($tags as $item)
+                                        <li><a href="javascript:void(0)">{{ $item }}</a></li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

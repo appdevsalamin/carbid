@@ -97,7 +97,7 @@
                                                 'value'         => old($item->code . "_description",$announcement->data?->language?->$lang_code?->description ?? null)
                                             ])
                                         </div>
-                                        <!-- <div class="form-group">
+                                        <div class="form-group">
                                             @php
                                                 $old_tags = $announcement->data?->language?->$lang_code?->tags ?? [];
                                             @endphp
@@ -107,7 +107,7 @@
                                                     <option value="{{ $tag }}" selected>{{ $tag }}</option>
                                                 @endforeach
                                             </select>
-                                        </div> -->
+                                        </div>
                                     </div>
                                 @endforeach
                                 

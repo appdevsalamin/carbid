@@ -31,12 +31,19 @@
                         <img src="{{  get_image($announce->data->image ?? '' ,'site-section') }}" alt="blog">
                     </div>
                     <div class="blog-content">
-                        <h4 class="title"><a href="{{ route('frontend.web.journal.show', $announce->slug) }}">{{ $announce->data->language->$app_local->title ?? $announce->data->language->$default->title }}</a></h4>
+                        <h4 class="title"><a href="{{ route('frontend.web.journal.show', $announce->slug) }}">{{ $announce->data->language->$app_local->title ?? $announce->data->language->$default->title ?? '' }}</a></h4>
+                    <div>
+                        <span><b>{{__("Category")}}:</b> </span>
+                        <span>
+                            {{ $announce->category->name->language->$app_local->name 
+                                ?? $announce->category->name->language->$default->name 
+                                ?? '' }}
+                        </span>
+                    </div>
                         <p>
-                            {{ \Illuminate\Support\Str::limit(strip_tags($announce->data->language->$app_local->description ?? $announce->data->language->$default->description), 150, '...') }}
+                            {{ \Illuminate\Support\Str::limit(strip_tags($announce->data->language->$app_local->description ?? $announce->data->language->$default->description ?? ''), 150, '...') }}
 
                         </p>
-
                     </div>
                 </div>
             </div>
