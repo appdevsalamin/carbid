@@ -23,7 +23,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $page_title = "User Profile";
+        $page_title = __("User Profile");
         $kyc_data = SetupKyc::userKyc()->first();
         return view('user.sections.profile.index',compact("page_title","kyc_data"));
     }
@@ -75,10 +75,10 @@ class ProfileController extends Controller
         try{
             auth()->user()->update($validated);
         }catch(Exception $e) {
-            return back()->with(['error' => ['Something went wrong! Please try again']]);
+            return back()->with(['error' => [__('Something went wrong! Please try again')]]);
         }
 
-        return back()->with(['success' => ['Profile successfully updated!']]);
+        return back()->with(['success' => [__('Profile successfully updated!')]]);
     }
     
     /**
@@ -94,10 +94,10 @@ class ProfileController extends Controller
             $user->save();
 
             Auth::logout();
-            return redirect('/')->with(['success' => ['Your account has been deleted successfully.']]);
+            return redirect('/')->with(['success' => [__('Your account has been deleted successfully')]]);
 
         }catch (\Exception $e) {
-            return back()->with(['error' => ['Something went wrong! Please try again.']]);
+            return back()->with(['error' => [__('Something went wrong! Please try again')]]);
         }
     }
 
@@ -116,7 +116,7 @@ class ProfileController extends Controller
 
         if(!Hash::check($request->current_password,auth()->user()->password)) {
             throw ValidationException::withMessages([
-                'current_password'      => 'Current password didn\'t match',
+                'current_password'      => __('Current password didn\'t match'),
             ]);
         }
 
@@ -125,10 +125,10 @@ class ProfileController extends Controller
                 'password'  => Hash::make($request->password),
             ]);
         }catch(Exception $e) {  
-            return back()->with(['error' => ['Something went wrong! Please try again.']]);
+            return back()->with(['error' => [__('Something went wrong! Please try again')]]);
         }
 
-        return back()->with(['success' => ['Password successfully updated!']]);
+        return back()->with(['success' => [__('Password successfully updated!')]]);
 
     }
 }

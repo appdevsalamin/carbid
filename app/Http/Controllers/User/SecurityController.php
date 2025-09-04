@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class SecurityController extends Controller
 {
     public function google2FA() {
-        $page_title = "Two Factor Authenticator";
+        $page_title = __("Two Factor Authenticator");
         $qr_code = generate_google_2fa_auth_qr();
 
         return view('user.sections.security.google-2fa',compact('page_title','qr_code'));
@@ -29,9 +29,9 @@ class SecurityController extends Controller
                 'two_factor_verified'       => true,
             ]);
         }catch(Exception $e) {
-            return back()->with(['error' => ['Something went wrong! Please try again']]);
+            return back()->with(['error' => [__('Something went wrong! Please try again')]]);
         }
-        return back()->with(['success' => ['Security Setting Updated Successfully!']]);
+        return back()->with(['success' => [__('Security Setting Updated Successfully!')]]);
     }
 
     /**
@@ -49,18 +49,18 @@ class SecurityController extends Controller
         ]);
         $user = auth()->user();
         if (!$user->two_factor_secret) {
-            return back()->with(['warning' => ['Your secret key not stored properly. Please contact support.']]);
+            return back()->with(['warning' => [__('Your secret key not stored properly. Please contact support')]]);
         }
         // Verify the given code with stored secret
         $valid = google_2fa_verify($user->two_factor_secret, $request->code);
         if (!$valid) {
-            return back()->with(['error' => ['Invalid verification code, please try again.']]);
+            return back()->with(['error' => [__('Invalid verification code, please try again.')]]);
         }
         // Enable after successful verification
         $user->update([
             'two_factor_status'   => 1,
             'two_factor_verified' => true,
         ]);
-        return back()->with(['success' => ['2FA enabled successfully!']]);
+        return back()->with(['success' => [__('2FA enabled successfully!')]]);
     }
 }
