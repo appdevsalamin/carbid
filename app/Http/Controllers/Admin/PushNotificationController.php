@@ -58,6 +58,7 @@ class PushNotificationController extends Controller
      * @return method
      */
     public function send(Request $request) {
+
         $validator = Validator::make($request->all(),[
             'title'     => 'required|string|max:40',
             'body'      => 'required|string|max:80',
@@ -161,7 +162,7 @@ class PushNotificationController extends Controller
                 sleep(2);
             }
         }catch(Exception $e){
-            return back()->with(['error' => ['Something went wrong! Please try again.']]);
+            return back()->with(['error' => [$e->getMessage()]]);
         }
 
         // Insert notification record to database

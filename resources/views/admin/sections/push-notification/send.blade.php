@@ -64,9 +64,9 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Title</th>
-                            <th>Body</th>
-                            <th>Time</th>
+                            <th>{{__("Title")}}</th>
+                            <th>{{__("Body")}}</th>
+                            <th>{{__("Time")}}</th>
                         </tr>
                     </thead>
                     <tbody>
