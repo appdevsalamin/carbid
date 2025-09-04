@@ -19,7 +19,7 @@ class ContactMessageController extends Controller
     */
     public function index()
     {
-        $page_title = "Contact Messages";
+        $page_title = __("Contact Messages");
         $contact_requests = ContactRequest::orderByDesc("id")->paginate(15);
         return view('admin.sections.contact-request.index',compact('page_title','contact_requests'));
     }

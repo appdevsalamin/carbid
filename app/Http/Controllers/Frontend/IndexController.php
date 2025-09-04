@@ -37,7 +37,7 @@ class IndexController extends Controller
      * @return view
      */
     public function about(){
-        $page_title         = "About Us";
+        $page_title         = __("About Us");
         $page_section       = SetupPage::where('slug','about')->with(['sections' => function($q){
             $q->where('status',true);
         }])->first();
@@ -50,7 +50,7 @@ class IndexController extends Controller
      * @return view
      */
     public function howItWorks() {
-        $page_title = "How it works";
+        $page_title = __("How it works");
         $page_section = SetupPage::where('slug','how-it-work')->with(['sections' => function($q){
             $q->where('status',true);
         }])->first();
@@ -64,7 +64,7 @@ class IndexController extends Controller
      * @return redirect
      */
     public function contact() {
-        $page_title = "Contact Us";
+        $page_title = __("Contact Us");
         $page_section = SetupPage::where('slug','contact')->with(['sections' => function($q){
             $q->where('status',true);
         }])->first();
@@ -78,7 +78,7 @@ class IndexController extends Controller
      * @return redirect
      */ 
     public function webJournal() {
-        $page_title = "Web Journal";
+        $page_title = __("Web Journal");
         $page_section = SetupPage::where('slug','web-journal')->with(['sections' => function($q){
             $q->where('status',true);
         }])->first();
@@ -92,6 +92,7 @@ class IndexController extends Controller
      * @return view
      */
     public function webJournalShow($slug) {
+         $page_title         = __("Web Journal Details");
         $announceMent = Announcement::where('slug', $slug)->first();
 
         if (!$announceMent) {
@@ -99,6 +100,7 @@ class IndexController extends Controller
         }
         return view('frontend.sections.web-journal-details', [
             'announcement' => $announceMent,
+            "page_title" => $page_title,
         ]);
     }
 
@@ -132,7 +134,7 @@ class IndexController extends Controller
         $validated = Validator::make($request->all(),[
             'name'      => "required|string|max:255",
             'email'     => "required|email|string|max:255",
-            'phone'     => 'required|numeric|digits:11',
+            'subject'   => 'required|string',
             'message'   => "required|string|max:5000",
         ])->validate();
 

@@ -268,7 +268,7 @@ class AnnouncementController extends Controller
         $basic_field_name = [
             'title'         => "required|string|max:255",
             'description'   => "required|string|max:5000000",
-            'tags'          => "nullable|array",
+            'tags'          => "required|array",
         ];
 
         $data['language']  = $this->contentValidate($request,$basic_field_name);
