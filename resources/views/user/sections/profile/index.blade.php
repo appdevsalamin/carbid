@@ -78,7 +78,7 @@
                                     <div class="input-group">
                                         <div class="input-group-text phone-code">+{{ auth()->user()->mobile_code }}</div>
                                         <input class="phone-code" type="hidden" name="phone_code" value="{{ auth()->user()->mobile_code }}" />
-                                        <input type="text" class="form--control" placeholder="Enter Phone ..." name="phone" value="{{ old('phone',auth()->user()->mobile) }}">
+                                        <input type="text" class="form--control" placeholder="{{__('Enter Phone')}} ..." name="phone" value="{{ old('phone',auth()->user()->mobile) }}">
                                     </div>
                                     @error("phone")
                                         <span class="invalid-feedback d-block" role="alert">
