@@ -26,7 +26,7 @@ class ForgotPasswordController extends Controller
      */
     public function showForgotForm()
     {
-        $page_title = setPageTitle("Forgot Password");
+        $page_title = setPageTitle("{{__('Forgot Password')}}");
 
         return view('driver.auth.forgot-password.forgot',compact('page_title'));
     }

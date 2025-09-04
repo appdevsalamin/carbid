@@ -1,7 +1,12 @@
 @extends('frontend.layouts.master')
 
 @push("css")
-
+<style>
+    .widget-box{
+    -webkit-box-shadow: none ;
+    box-shadow: none ;
+    }
+</style>
 @endpush
 
 @section('content')

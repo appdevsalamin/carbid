@@ -10,7 +10,7 @@
 @endif>{{ $value ?? "" }}</textarea>
 
 @error($name ?? false)
-    <span class="invalid-feedback d-block" role="alert">
+    {{-- <span class="invalid-feedback d-block" role="alert">
         <strong>{{ $message }}</strong>
-    </span>
+    </span> --}}
 @enderror

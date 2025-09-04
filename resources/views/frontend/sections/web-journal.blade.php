@@ -9,7 +9,18 @@
 
     $announceData = App\Models\Frontend\Announcement::where('status', 1)->get();
 @endphp
-
+<style>
+    .blog-span {
+        display: inline-block;
+        border: 1px solid #22abc3;
+        padding: 2px 10px ;
+        margin-bottom: 10px;
+        border-radius: 5px ;
+        background:#22abc3 ;
+        color: #ffffff ;
+        font-weight: 600 ;
+    }
+</style>
 <section class="blog-section ptb-80">
     <div class="container">
         <div class="row justify-content-center">
@@ -34,7 +45,7 @@
                         <h4 class="title"><a href="{{ route('frontend.web.journal.show', $announce->slug) }}">{{ $announce->data->language->$app_local->title ?? $announce->data->language->$default->title ?? '' }}</a></h4>
                     <div>
                         <span><b>{{__("Category")}}:</b> </span>
-                        <span>
+                        <span  class="blog-span">
                             {{ $announce->category->name->language->$app_local->name 
                                 ?? $announce->category->name->language->$default->name 
                                 ?? '' }}

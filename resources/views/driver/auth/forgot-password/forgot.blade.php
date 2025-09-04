@@ -21,7 +21,7 @@
                             <div class="col-lg-12 form-group">
                                 @include('admin.components.form.input',[
                                     'name'          => "credentials",
-                                    'placeholder'   => "Username OR Email Address",
+                                    'placeholder'   => __("Username OR Email Address"),
                                     'required'      => true,
                                 ])
                             </div>
