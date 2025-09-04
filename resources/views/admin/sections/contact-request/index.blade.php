@@ -30,12 +30,12 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Message</th>
-                            <th>Reply</th>
-                            <th>Created At</th>
+                            <th>{{__("Name")}}</th>
+                            <th>{{__("Email")}}</th>
+                            <th>{{__("Subject")}}</th>
+                            <th>{{__("Message")}}</th>
+                            <th>{{__("Reply")}}</th>
+                            <th>{{__("Created At")}}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -44,8 +44,8 @@
                             <tr data-item="{{ json_encode($item->only(['id'])) }}">
                                 <td>{{ $key + $contact_requests->firstItem() }}</td>
                                 <td>{{ $item->name }}</td>
-                                <td>{{ $item->phone }}</td>
                                 <td>{{ $item->email }}</td>
+                                <td>{{ $item->subject }}</td>
                                 <td>{{ $item->message }}</td>
                                 <td>
                                     @if ($item->reply == true)

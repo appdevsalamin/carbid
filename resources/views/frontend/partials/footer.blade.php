@@ -62,7 +62,7 @@
                         @csrf  
                         <div class="form-group">
                             <label class="subscribe-icon"><i class="fa fa-envelope"></i></label>
-                            <input type="email" name="email" class="form--control" placeholder="Your Email Address...">
+                            <input type="email" name="email" class="form--control" placeholder="{{__('Your Email Address')}} ..." required>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn--base w-100">{{__("Subscribe")}}</button>

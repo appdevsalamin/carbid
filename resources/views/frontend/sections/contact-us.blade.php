@@ -104,19 +104,19 @@
                             <div class="row justify-content-center mb-30-none">
                                 <div class="col-xl-6 col-lg-6 col-md-12 form-group">
                                     <label>{{__("Name")}}<span>*</span></label>
-                                    <input type="text" name="name" class="form--control" placeholder="{{__('Enter Name')}}...">
+                                    <input type="text" name="name" class="form--control" placeholder="{{__('Enter Name')}}..." required>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-12 form-group">
                                     <label>{{__("Email")}}<span>*</span></label>
-                                    <input type="email" name="email" class="form--control" placeholder="{{__('Enter Email')}}...">
+                                    <input type="email" name="email" class="form--control" placeholder="{{__('Enter Email')}}..." required>
                                 </div>
                                 <div class="col-xl-12 col-lg-12 form-group">
-                                    <label>{{__("Phone")}}<span>*</span></label>
-                                    <input type="text" name="phone" class="form--control" placeholder="{{__('Enter Phone')}}...">
+                                    <label>{{__("Subject")}}<span>*</span></label>
+                                    <input type="text" name="subject" class="form--control" placeholder="{{__('Enter Subject')}}..." required>
                                 </div>
                                 <div class="col-xl-12 col-lg-12 form-group">
                                     <label>{{__("Message")}}<span>*</span></label>
-                                    <textarea class="form--control" name="message" placeholder="{{__('Write Here')}}..."></textarea>
+                                    <textarea class="form--control" name="message" placeholder="{{__('Write Here')}}..." required></textarea>
                                 </div>
                                 <div class="col-lg-12 form-group">
                                     <button type="submit" class="btn--base mt-10">{{__("Send Message")}}</button>
